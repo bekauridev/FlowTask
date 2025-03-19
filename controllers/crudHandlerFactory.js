@@ -2,16 +2,14 @@ const asyncMiddleware = require("../middlewares/asyncMiddleware");
 const ApiFeatures = require("../utils/apiFeatures");
 const AppError = require("../utils/AppError");
 
-// Common Parameters Description
-//  @param   {Model} Model - The Mongoose model representing the collection.
-
-//  @desc   Retrieve a list of documents with optional filtering
-//  The function takes in the request `req` and returns a query filter object.
-
+/**
+ * @desc  Retrieve a list of documents with optional filtering and methods like `filter, sort, limitFields, paginate.`
+ * @param {Model} Model - The Mongoose model representing the collection.
+ */
 exports.indexDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
+    // additional filters from request
     const filter = Object.entries(req.filter).length ? req.filter : {};
-    console.log(filter);
     const features = new ApiFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
@@ -27,10 +25,13 @@ exports.indexDoc = (Model) =>
     });
   });
 
-// @desc  This function retrieves a single document from the database by its ID, with support for optional population of related fields using the query string parameter `populate`.
+/**
+ * @desc This function retrieves a single document from the database by its ID, with support for optional population of related fields using the query string parameter `populate`.
+ * @param {Model} Model - The Mongoose model representing the collection.
+ */
 exports.showDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
-    // Apply the filter based on the request (e.g., logged-in user)
+    // additional filters from request
     const filter = Object.entries(req.filter).length ? req.filter : {};
 
     // Find the document by ID and apply any additional filters
@@ -57,7 +58,10 @@ exports.showDoc = (Model) =>
     });
   });
 
-// @desc  Create a new document
+/**
+ * @desc  Create a new document
+ * @param {Model} Model - The Mongoose model representing the collection
+ */
 exports.storeDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
     const doc = await Model.create(req.body);
@@ -68,21 +72,28 @@ exports.storeDoc = (Model) =>
     });
   });
 
-// @desc Create a new nested document
+/**
+ * @desc    Stores one or more nested documents inside a parent document
+ * @routeExample   POST /parent/:parentParamIdName/child
+ * @param   {Model} parentModel - The Parent Mongoose model
+ * @param   {String} parentParamIdName - URL param name for the parent doc ID
+ * @param   {String} nestedFieldName - Field in parent where nested docs are stored
+ * @returns {Object} - The updated parent document with the new nested documents added
+ */
 exports.storeNestedDocs = (parentModel, parentParamIdName, nestedFieldName) =>
   asyncMiddleware(async (req, res, next) => {
-    //get params from URL e.g., /example/:exampleId
+    //Get params from URL
     const parentId = req.params[parentParamIdName]; // e.g., exampleId
-    const filter = Object.entries(req.filter).length ? req.filter : {}; // additional filters
+    // additional filters from request
+    const filter = Object.entries(req.filter).length ? req.filter : {};
 
-    // Nested document from the request body
-    const newNestedDoc = req.body;
+    const newNestedDoc = req.body; // Request body
 
-    // Update the parent document by pushing the new nested document into the specified field
+    // Update the parent document by pushing the new nested document(s) into the specified field
     const updatedParent = await parentModel.findOneAndUpdate(
-      { _id: parentId, ...filter },
-      { $push: { [nestedFieldName]: { $each: newNestedDoc } } }, // push docs one by one
-      { new: true, runValidators: true }
+      { _id: parentId, ...filter }, // Find the parent document
+      { $push: { [nestedFieldName]: { $each: newNestedDoc } } }, // Push docs one by one
+      { new: true, runValidators: true } // Return the updated document and run validators
     );
 
     if (!updatedParent) {
@@ -95,10 +106,13 @@ exports.storeNestedDocs = (parentModel, parentParamIdName, nestedFieldName) =>
     });
   });
 
-// @desc Update a single document by ID
+/**
+ * @desc Update a single document by ID
+ * @param {Model} Model - The Mongoose model representing the collection
+ */
 exports.updateDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
-    // Apply the filter based on the request (e.g., logged-in user)
+    // additional filters from request
     const filter = Object.entries(req.filter).length ? req.filter : {};
     // Find the document by ID and apply the filter, then update it
     const doc = await Model.findOneAndUpdate(
@@ -128,7 +142,6 @@ exports.updateDoc = (Model) =>
  * @param   {String} parentParamIdName - URL param name for the parent doc ID
  * @param   {String} nestedFieldName - Field in parent where nested docs live
  * @param   {String} nestedParamIdName - URL param name for the nested doc ID
- * @access  Private
  * @returns {Object} - The updated nested document doesn't updates duplicates
  */
 exports.updateNestedDocs = (
@@ -185,37 +198,14 @@ exports.updateNestedDocs = (
       data: nestedDoc,
     });
   });
-// exports.updateWebsite = asyncMiddleware(async (req, res, next) => {
-//   const organizationId = req.params.organizationId;
-//   const websiteId = req.params.websiteId;
 
-//   const organization = await Organization.findById(organizationId);
-
-//   if (!organization) {
-//     return next(new AppError(`No organization found with id of ${organizationId}`, 404));
-//   }
-
-//   const website = organization.websites.id(websiteId);
-
-//   if (!website) {
-//     return next(new AppError(`No website found with id of ${websiteId}`, 404));
-//   }
-//   // Update the website fields
-//   Object.assign(website, req.body);
-
-//   // Save the updated organization document
-//   await organization.save({ validateBeforeSave: false });
-
-//   res.status(200).json({
-//     status: "success",
-//     data: website,
-//   });
-// });
-
-//  @desc   Delete a single document by ID
+/**
+ * @desc Delete a single document by ID
+ * @param {Model} Model - The Mongoose model representing the collection
+ */
 exports.destroyDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
-    // Apply the filter based on the request (e.g., logged-in user)
+    // additional filters from request
     const filter = Object.entries(req.filter).length ? req.filter : {};
     // Find the document by ID and apply the filter, then delete it
     const doc = await Model.findOneAndDelete({ _id: req.params.id, ...filter });
