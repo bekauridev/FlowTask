@@ -1,6 +1,9 @@
 const asyncMiddleware = require("../middlewares/asyncMiddleware");
 const Organization = require("../models/organizationModel");
-const { storeNestedDocs } = require("../controllers/crudHandlerFactory");
+const {
+  storeNestedDocs,
+  updateNestedDocs,
+} = require("../controllers/crudHandlerFactory");
 const AppError = require("../utils/AppError");
 
 // Order to see all websites you should go to this Route
@@ -9,71 +12,17 @@ const AppError = require("../utils/AppError");
 // @desc   Create a new website
 // @route  POST /api/v1/organizations/organizationId/websites
 // @access Private
-// exports.createWebsite = asyncMiddleware(async (req, res, next) => {
-//   const organizationId = req.params.organizationId;
-//   const filter = req.filter || {};
 
-//   const newWebsite = {
-//     name: req.body.name,
-//     url: req.body.url,
-//     identifier: req.body.identifier,
-//     passwordRecord: req.body.passwordRecord,
-//   };
-
-//   // Update the organization by pushing the new website into the embedded array
-//   const updatedOrganization = await Organization.findOneAndUpdate(
-//     { _id: organizationId, ...filter },
-//     { $push: { websites: newWebsite } },
-//     { new: true, runValidators: true }
-//   );
-
-//   if (!updatedOrganization) {
-//     return next(new AppError(`No organization found with id of ${organizationId}`, 404));
-//   }
-
-//   res.status(201).json({
-//     status: "success",
-//     data: {
-//       organization: updatedOrganization,
-//     },
-//   });
-// });
 exports.createWebsite = storeNestedDocs(Organization, "organizationId", "websites");
 // @desc   Update an existing website
 // @route  PATCH /api/v1/organizations/organizationId/websites/websiteId
 // @access Private
-exports.updateWebsite = asyncMiddleware(async (req, res, next) => {
-  const organizationId = req.params.organizationId;
-  const websiteId = req.params.websiteId;
-  const filter = req.filter || {};
-
-  const organization = await Organization.findOne({ _id: organizationId, ...filter });
-
-  if (!organization) {
-    return next(new AppError(`No organization found with id of ${organizationId}`, 404));
-  }
-
-  // Find the website by its unique ID within the websites array
-  const website = organization.websites.id(websiteId);
-
-  if (!website) {
-    return next(new AppError(`No website found with id of ${websiteId}`, 404));
-  }
-
-  // Update the website fields
-  Object.assign(website, req.body);
-
-  // Save the updated organization document
-  await organization.save();
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      updatedWebsite: website,
-    },
-  });
-});
-
+exports.updateWebsite = updateNestedDocs(
+  Organization,
+  "organizationId",
+  "websites",
+  "websiteId"
+);
 // @desc   Delete multiple or single website
 // @route  DELETE /api/v1/organizations/organizationId/websites/websiteId
 exports.deleteWebsite = asyncMiddleware(async (req, res, next) => {

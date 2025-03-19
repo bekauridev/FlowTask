@@ -71,7 +71,8 @@ exports.storeDoc = (Model) =>
 // @desc Create a new nested document
 exports.storeNestedDocs = (parentModel, parentParamIdName, nestedFieldName) =>
   asyncMiddleware(async (req, res, next) => {
-    const parentId = req.params[parentParamIdName]; // e.g., organizationId
+    //get params from URL e.g., /example/:exampleId
+    const parentId = req.params[parentParamIdName]; // e.g., exampleId
     const filter = Object.entries(req.filter).length ? req.filter : {}; // additional filters
 
     // Nested document from the request body
@@ -94,7 +95,7 @@ exports.storeNestedDocs = (parentModel, parentParamIdName, nestedFieldName) =>
     });
   });
 
-//  @desc Update a single document by ID
+// @desc Update a single document by ID
 exports.updateDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
     // Apply the filter based on the request (e.g., logged-in user)
@@ -119,6 +120,97 @@ exports.updateDoc = (Model) =>
       data: doc,
     });
   });
+
+/**
+ * @desc    Updates a specific nested document inside a parent document
+ * @routeExample   PATCH /parent/:parentParamIdName/child/:nestedParamIdName
+ * @param   {Model} parentModel - The Parent Mongoose model
+ * @param   {String} parentParamIdName - URL param name for the parent doc ID
+ * @param   {String} nestedFieldName - Field in parent where nested docs live
+ * @param   {String} nestedParamIdName - URL param name for the nested doc ID
+ * @access  Private
+ * @returns {Object} - The updated nested document doesn't updates duplicates
+ */
+exports.updateNestedDocs = (
+  parentModel,
+  parentParamIdName,
+  nestedFieldName,
+  nestedParamIdName
+) =>
+  asyncMiddleware(async (req, res, next) => {
+    // Grab IDs from the URL parameters
+    const parentId = req.params[parentParamIdName]; // e.g., organizationId
+    const nestedFieldId = req.params[nestedParamIdName]; // e.g., websiteId
+
+    // Check if request body has update data
+    const body = req.body;
+    if (!body || Object.keys(body).length === 0)
+      return next(new AppError(`No fields provided to update`, 400));
+
+    // Find the parent document
+    const parent = await parentModel.findById(parentId);
+    if (!parent)
+      return next(new AppError(`No document found with id of ${parentId}`, 404));
+
+    // Find the specific nested doc inside the parent
+    const nestedDoc = parent[nestedFieldName].id(nestedFieldId);
+    if (!nestedDoc)
+      return next(
+        new AppError(
+          `No ${nestedFieldName} found with id of ${nestedFieldId} in ${parentModel.modelName.toLowerCase()}`,
+          404
+        )
+      );
+
+    // Prepare updates: only keep fields that actually changed
+    let updatedFields = {};
+    Object.entries(body).forEach(([key, value]) => {
+      if (nestedDoc[key] !== value) updatedFields[key] = value;
+    });
+
+    // Return original doc if nothing changes
+    if (Object.keys(updatedFields).length === 0)
+      return res.status(200).json({
+        status: "success",
+        data: nestedDoc,
+      });
+
+    // Apply updates to the nested document
+    Object.assign(nestedDoc, updatedFields);
+    // Save the updated document
+    await parent.save({ validateBeforeSave: false }); // Skip unnecessary validation
+
+    res.status(200).json({
+      status: "success",
+      data: nestedDoc,
+    });
+  });
+// exports.updateWebsite = asyncMiddleware(async (req, res, next) => {
+//   const organizationId = req.params.organizationId;
+//   const websiteId = req.params.websiteId;
+
+//   const organization = await Organization.findById(organizationId);
+
+//   if (!organization) {
+//     return next(new AppError(`No organization found with id of ${organizationId}`, 404));
+//   }
+
+//   const website = organization.websites.id(websiteId);
+
+//   if (!website) {
+//     return next(new AppError(`No website found with id of ${websiteId}`, 404));
+//   }
+//   // Update the website fields
+//   Object.assign(website, req.body);
+
+//   // Save the updated organization document
+//   await organization.save({ validateBeforeSave: false });
+
+//   res.status(200).json({
+//     status: "success",
+//     data: website,
+//   });
+// });
 
 //  @desc   Delete a single document by ID
 exports.destroyDoc = (Model) =>
