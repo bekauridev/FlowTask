@@ -207,11 +207,83 @@ exports.destroyDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
     // additional filters from request
     const filter = Object.entries(req.filter).length ? req.filter : {};
-    // Find the document by ID and apply the filter, then delete it
+    // Find the document by ID
     const doc = await Model.findOneAndDelete({ _id: req.params.id, ...filter });
 
     if (!doc) {
       return next(new AppError(`No document found with id of ${req.params.id}`, 404));
+    }
+
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  });
+
+/**
+ * Reusable function to delete single or all nested documents from a parent document
+ * @param {Model} parentModel - Parent model (e.g., Organization)
+ * @param {string} parentParamIdName - URL param name for parent ID (e.g., "organizationId")
+ * @param {string} nestedFieldName - Field containing nested documents (e.g., "websites")
+ * @param {string} [nestedParamIdName] - URL param name for nested doc ID (e.g., "websiteId")
+ */
+exports.deleteNestedDocs = (
+  parentModel,
+  parentParamIdName,
+  nestedFieldName,
+  nestedParamIdName
+) =>
+  asyncMiddleware(async (req, res, next) => {
+    const parentId = req.params[parentParamIdName];
+    const nestedId =
+      nestedParamIdName && req.params[nestedParamIdName]
+        ? req.params[nestedParamIdName]
+        : null;
+    // additional filters from request
+    const filter = Object.entries(req.filter).length ? req.filter : {};
+
+    // Find parent document
+    const parent = await parentModel.findOne({ _id: parentId, ...filter });
+    if (!parent) {
+      return next(
+        new AppError(
+          `No ${parentModel.modelName.toLowerCase()} found with id ${parentId}`,
+          404
+        )
+      );
+    }
+
+    // Check if nested documents exist
+    if (!parent[nestedFieldName]?.length) {
+      return next(new AppError(`${nestedFieldName} list is already empty`, 400));
+    }
+
+    let updateOperation;
+    // Delete single nested document if ID is provided
+    if (nestedId) {
+      // Verify nested document exists
+      const exists = parent[nestedFieldName].some((doc) => doc._id.equals(nestedId));
+      if (!exists)
+        return next(
+          new AppError(`No ${nestedFieldName.slice(0, -1)} found with provided ID`, 404)
+        );
+
+      updateOperation = { $pull: { [nestedFieldName]: { _id: nestedId } } };
+    } else {
+      // Delete all nested documents
+      updateOperation = { $set: { [nestedFieldName]: [] } };
+    }
+
+    // Execute update
+    const updatedParent = await parentModel.findByIdAndUpdate(parentId, updateOperation, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedParent) {
+      return next(
+        new AppError(`Failed to update ${parentModel.modelName.toLowerCase()}`, 500)
+      );
     }
 
     res.status(204).json({
