@@ -127,7 +127,7 @@ const generateRowData = (org, index) => {
   const WebData = org.websites
     .map(
       (website) =>
-        `${website.name}: \n ${website.identificationCodeRecord} \n ${website.passwordRecord}`
+        `${website.name}: \n ${website.identifier} \n ${website.passwordRecord}`
     )
     .join("\n");
 

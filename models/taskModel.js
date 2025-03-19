@@ -43,11 +43,12 @@ const taskSchema = new mongoose.Schema(
       required: [true, "Task must belong to a user"],
     },
 
-    organization: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
-      required: [true, "Task must belong to a organization"],
-    },
+    organization: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organization",
+      },
+    ],
 
     label: {
       type: mongoose.Schema.Types.ObjectId,

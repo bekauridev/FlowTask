@@ -16,7 +16,7 @@ exports.createWebsite = asyncMiddleware(async (req, res, next) => {
   const newWebsite = {
     name: req.body.name,
     url: req.body.url,
-    identificationCodeRecord: req.body.identificationCodeRecord,
+    identifier: req.body.identifier,
     passwordRecord: req.body.passwordRecord,
   };
 

@@ -39,9 +39,9 @@ const organizationSchema = new mongoose.Schema(
 `,
           },
         },
-        identificationCodeRecord: {
+        identifier: {
           type: String,
-          required: [true, "Identification code is required"],
+          required: [true, "identifier code is required"],
         },
         passwordRecord: {
           type: String,
@@ -54,17 +54,24 @@ const organizationSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "Organization must belong to a user"],
     },
+    tasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
   },
 
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 // Virtual populate
-organizationSchema.virtual("tasks", {
-  ref: "Task",
-  foreignField: "organization",
-  localField: "_id",
-});
+// organizationSchema.virtual("tasks", {
+//   ref: "Task",
+//   foreignField: "organization",
+//   localField: "_id",
+// });
+
 // Cascade delete Tasks when an organization is deleted
 organizationSchema.pre("findOneAndDelete", async function (next) {
   const organization = await this.model.findOne(this.getQuery());

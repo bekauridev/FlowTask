@@ -9,13 +9,13 @@
       {
         "name": "მთავარი საიტი",
         "url": "https://greenfield-analytics.ge",
-        "identificationCodeRecord": "ID-12345",
+        "identifier": "ID-12345",
         "passwordRecord": "pass123!"
       },
       {
         "name": "შემოწმების პორტალი",
         "url": "https://portal.greenfield-analytics.ge",
-        "identificationCodeRecord": "ID-54321",
+        "identifier": "ID-54321",
         "passwordRecord": "securePass543!"
       }
     ],
@@ -31,7 +31,7 @@
       {
         "name": "ფერმის საიტი",
         "url": "https://sunwellfarms.ge",
-        "identificationCodeRecord": "ID-77889",
+        "identifier": "ID-77889",
         "passwordRecord": "sunFarmSecure778"
       }
     ],
@@ -47,7 +47,7 @@
       {
         "name": "დასუფთავების ბლოგი",
         "url": "https://crystalclean.ge",
-        "identificationCodeRecord": "ID-99887",
+        "identifier": "ID-99887",
         "passwordRecord": "cleanSpace998"
       }
     ],
@@ -63,7 +63,7 @@
       {
         "name": "ეკო პორტალი",
         "url": "https://ecowave.ge",
-        "identificationCodeRecord": "ID-67890",
+        "identifier": "ID-67890",
         "passwordRecord": "ecoWavePass678"
       }
     ],
@@ -79,13 +79,13 @@
       {
         "name": "ტრანსპორტირების ცენტრი",
         "url": "https://bluehorizon-logistics.ge",
-        "identificationCodeRecord": "ID-11223",
+        "identifier": "ID-11223",
         "passwordRecord": "blueLog123!"
       },
       {
         "name": "მომხმარებელთა მხარდაჭერა",
         "url": "https://support.bluehorizon-logistics.ge",
-        "identificationCodeRecord": "ID-44556",
+        "identifier": "ID-44556",
         "passwordRecord": "clientSupport445"
       }
     ],
