@@ -1,44 +1,44 @@
 const asyncMiddleware = require("../middlewares/asyncMiddleware");
 const Organization = require("../models/organizationModel");
-
+const { storeNestedDocs } = require("../controllers/crudHandlerFactory");
 const AppError = require("../utils/AppError");
 
 // Order to see all websites you should go to this Route
 // @route  GET /api/v1/organizations/
 
 // @desc   Create a new website
-// @route  GET /api/v1/organizations/organizationId/websites
+// @route  POST /api/v1/organizations/organizationId/websites
 // @access Private
-exports.createWebsite = asyncMiddleware(async (req, res, next) => {
-  const organizationId = req.params.organizationId;
-  const filter = req.filter || {};
+// exports.createWebsite = asyncMiddleware(async (req, res, next) => {
+//   const organizationId = req.params.organizationId;
+//   const filter = req.filter || {};
 
-  const newWebsite = {
-    name: req.body.name,
-    url: req.body.url,
-    identifier: req.body.identifier,
-    passwordRecord: req.body.passwordRecord,
-  };
+//   const newWebsite = {
+//     name: req.body.name,
+//     url: req.body.url,
+//     identifier: req.body.identifier,
+//     passwordRecord: req.body.passwordRecord,
+//   };
 
-  // Update the organization by pushing the new website into the embedded array
-  const updatedOrganization = await Organization.findOneAndUpdate(
-    { _id: organizationId, ...filter },
-    { $push: { websites: newWebsite } },
-    { new: true, runValidators: true }
-  );
+//   // Update the organization by pushing the new website into the embedded array
+//   const updatedOrganization = await Organization.findOneAndUpdate(
+//     { _id: organizationId, ...filter },
+//     { $push: { websites: newWebsite } },
+//     { new: true, runValidators: true }
+//   );
 
-  if (!updatedOrganization) {
-    return next(new AppError(`No organization found with id of ${organizationId}`, 404));
-  }
+//   if (!updatedOrganization) {
+//     return next(new AppError(`No organization found with id of ${organizationId}`, 404));
+//   }
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      organization: updatedOrganization,
-    },
-  });
-});
-
+//   res.status(201).json({
+//     status: "success",
+//     data: {
+//       organization: updatedOrganization,
+//     },
+//   });
+// });
+exports.createWebsite = storeNestedDocs(Organization, "organizationId", "websites");
 // @desc   Update an existing website
 // @route  PATCH /api/v1/organizations/organizationId/websites/websiteId
 // @access Private
@@ -75,7 +75,6 @@ exports.updateWebsite = asyncMiddleware(async (req, res, next) => {
 });
 
 // @desc   Delete multiple or single website
-// @route  DELETE /api/v1/organizatiosn/organizationId/websites
 // @route  DELETE /api/v1/organizations/organizationId/websites/websiteId
 exports.deleteWebsite = asyncMiddleware(async (req, res, next) => {
   const { organizationId, websiteId } = req.params;

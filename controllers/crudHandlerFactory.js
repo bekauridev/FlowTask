@@ -68,6 +68,32 @@ exports.storeDoc = (Model) =>
     });
   });
 
+// @desc Create a new nested document
+exports.storeNestedDocs = (parentModel, parentParamIdName, nestedFieldName) =>
+  asyncMiddleware(async (req, res, next) => {
+    const parentId = req.params[parentParamIdName]; // e.g., organizationId
+    const filter = Object.entries(req.filter).length ? req.filter : {}; // additional filters
+
+    // Nested document from the request body
+    const newNestedDoc = req.body;
+
+    // Update the parent document by pushing the new nested document into the specified field
+    const updatedParent = await parentModel.findOneAndUpdate(
+      { _id: parentId, ...filter },
+      { $push: { [nestedFieldName]: { $each: newNestedDoc } } }, // push docs one by one
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedParent) {
+      return next(new AppError(`No document found with id of ${parentId}`, 404));
+    }
+
+    res.status(201).json({
+      status: "success",
+      data: updatedParent,
+    });
+  });
+
 //  @desc Update a single document by ID
 exports.updateDoc = (Model) =>
   asyncMiddleware(async (req, res, next) => {
