@@ -1,0 +1,94 @@
+[
+  {
+    "_id": "6727afb9d5c0f7bcc8705b42",
+    "name": "გრინფილდ ანალიტიკა",
+    "type": "შპს",
+    "contact": "+995 555 123 456",
+    "note": "ორგანიზაცია სპეციალიზირებულია კვლევით საქმიანობაში",
+    "websites": [
+      {
+        "name": "მთავარი საიტი",
+        "url": "https://greenfield-analytics.ge",
+        "identificationCodeRecord": "ID-12345",
+        "passwordRecord": "pass123!"
+      },
+      {
+        "name": "შემოწმების პორტალი",
+        "url": "https://portal.greenfield-analytics.ge",
+        "identificationCodeRecord": "ID-54321",
+        "passwordRecord": "securePass543!"
+      }
+    ],
+    "user": "67a613fdbfe6fd746d430552"
+  },
+  {
+    "_id": "6727afb9d5c0f7bcc8705b4a",
+    "name": "სანსველი ფერმები",
+    "type": "შპს",
+    "contact": "+995 555 456 789",
+    "note": "ეკოლოგიურად სუფთა პროდუქცია საქართველოში",
+    "websites": [
+      {
+        "name": "ფერმის საიტი",
+        "url": "https://sunwellfarms.ge",
+        "identificationCodeRecord": "ID-77889",
+        "passwordRecord": "sunFarmSecure778"
+      }
+    ],
+    "user": "67a613fdbfe6fd746d430552"
+  },
+  {
+    "_id": "6727afb9d5c0f7bcc8705b4c",
+    "name": "ქრისტალ ქლინ",
+    "type": "შპს",
+    "contact": "+995 555 567 890",
+    "note": "სუფთა და უსაფრთხო გარემო თქვენი სახლისთვის",
+    "websites": [
+      {
+        "name": "დასუფთავების ბლოგი",
+        "url": "https://crystalclean.ge",
+        "identificationCodeRecord": "ID-99887",
+        "passwordRecord": "cleanSpace998"
+      }
+    ],
+    "user": "67a613fdbfe6fd746d430552"
+  },
+  {
+    "_id": "6727afb9d5c0f7bcc8705b45",
+    "name": "ეკოვეივ სოლუშენსი",
+    "type": "შპს",
+    "contact": "+995 555 234 567",
+    "note": "ჩვენი მისიაა სუფთა და ჯანსაღი გარემოს დაცვა",
+    "websites": [
+      {
+        "name": "ეკო პორტალი",
+        "url": "https://ecowave.ge",
+        "identificationCodeRecord": "ID-67890",
+        "passwordRecord": "ecoWavePass678"
+      }
+    ],
+    "user": "67a613fdbfe6fd746d430552"
+  },
+  {
+    "_id": "6727afb9d5c0f7bcc8705b47",
+    "name": "ბლუ ჰორაიზონ ლოჯისტიკა",
+    "type": "შპს",
+    "contact": "+995 555 345 678",
+    "note": "სწრაფი და საიმედო ტრანსპორტირების სერვისი",
+    "websites": [
+      {
+        "name": "ტრანსპორტირების ცენტრი",
+        "url": "https://bluehorizon-logistics.ge",
+        "identificationCodeRecord": "ID-11223",
+        "passwordRecord": "blueLog123!"
+      },
+      {
+        "name": "მომხმარებელთა მხარდაჭერა",
+        "url": "https://support.bluehorizon-logistics.ge",
+        "identificationCodeRecord": "ID-44556",
+        "passwordRecord": "clientSupport445"
+      }
+    ],
+    "user": "67a613fdbfe6fd746d430552"
+  }
+]

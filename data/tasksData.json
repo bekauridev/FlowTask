@@ -1,0 +1,63 @@
+[
+  {
+    "_id": "8728afb9d5c0f7bcc8706b40",
+    "title": "იანვრის დეკლარაციები",
+    "description": "",
+    "recurrence": "monthly",
+    "targetPeriod": "2023-01-01",
+    "status": "completed",
+    "startDate": "2023-02-01",
+    "deadline": "2023-02-15",
+    "user": "67a613fdbfe6fd746d430552",
+    "organization": "6727afb9d5c0f7bcc8705b42"
+  },
+  {
+    "_id": "8728afb9d5c0f7bcc8706b41",
+    "title": "თებერვლის რეპორტი",
+    "description": "",
+    "recurrence": "monthly",
+    "targetPeriod": "2023-02-01",
+    "status": "progress",
+    "startDate": "2023-03-01",
+    "deadline": "2023-03-15",
+    "user": "67a613fdbfe6fd746d430552",
+    "organization": "6727afb9d5c0f7bcc8705b4a"
+  },
+  {
+    "_id": "8728afb9d5c0f7bcc8706b42",
+    "title": "მარტის დეკლარაციები",
+    "description": "",
+    "recurrence": "monthly",
+    "targetPeriod": "2023-03-01",
+    "status": "progress",
+    "startDate": "2023-04-01",
+    "deadline": "2023-04-15",
+    "user": "67a613fdbfe6fd746d430552",
+    "organization": "6727afb9d5c0f7bcc8705b4c"
+  },
+  {
+    "_id": "8728afb9d5c0f7bcc8706b43",
+    "title": "2023 წლის კვარტალური",
+    "description": "",
+    "recurrence": "yearly",
+    "targetPeriod": "2023-01-01",
+    "status": "progress",
+    "startDate": "2024-01-01",
+    "deadline": "2023-10-30",
+    "user": "67a613fdbfe6fd746d430552",
+    "organization": "6727afb9d5c0f7bcc8705b45"
+  },
+
+  {
+    "_id": "8728afb9d5c0f7bcc8706b44",
+    "title": "2023 წლის დეკლარაციები",
+    "description": "",
+    "recurrence": "yearly",
+    "targetPeriod": "2023",
+    "status": "completed",
+    "startDate": "2024-01-01",
+    "deadline": "2024-08-30",
+    "user": "67a613fdbfe6fd746d430552",
+    "organization": "6727afb9d5c0f7bcc8705b47"
+  }
+]
